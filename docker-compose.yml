@@ -5,22 +5,25 @@ services:
       context: ./nginx-phpfpm
     image: nginx_image1
     volumes:
-      - /var/log/nginx/access.log:/var/log/nginx/access.log
+      - /var/log:/var/log
+      - /var/log/nginx:/var/log/nginx
     ports:
       - "80:80"
   pytail:
     build:
       context: ./pytail
     image: pytail_image1
-    volumes:
-      - /var/log/stats.log:/var/log/stats.log
-      - /var/log/nginx/access.log:/var/log/nginx/access.log
+    volumes_from:
+      - "nginx"
     stdin_open: true
     tty: true
+    depends_on:
+      - "nginx"
   pygen:
     build:
       context: ./pygen
     image: pygen_image1
     stdin_open: true
     tty: true
-
+    depends_on:
+      - "pytail"

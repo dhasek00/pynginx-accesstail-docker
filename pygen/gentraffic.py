@@ -5,6 +5,8 @@ import time
 PAGES = ["/", "/about.php", "/redirect.php", "/error.php", "/error2.php", "/noexist.html"]
 
 def main():
+    # Wait for services to come up
+    time.sleep(10)
     for x in range(0,100):
         timer = random.random()
         page_int = random.randint(0,5)

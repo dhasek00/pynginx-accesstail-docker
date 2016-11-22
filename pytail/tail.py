@@ -11,6 +11,7 @@ Purpose: On a given access.log file, start at the file end
 import sys
 import time
 import re
+import os
 from collections import Counter
 
 # Define some regular expressions to extract the route and status code
@@ -102,6 +103,17 @@ def main():
         else:
             print("Usage: python tail.py [accesslogfile]")
             sys.exit(1)
+
+        # If file doesn't exist - wait 10 seconds for it to be
+        # created. In case service is still starting.
+        if os.path.isfile(filename) is False:
+            print("File doesn't exist. Waiting 10 for it to be created.")
+            for x in range(0,10):
+                if os.path.isfile(filename) is False:
+                    time.sleep(1)
+                else:
+                    print("Opening File")
+                    break
 
         # Open the file with read-only privileges in bytes mode
         with open("/var/log/stats.log", "ab") as statsFile:
